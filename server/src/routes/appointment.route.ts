@@ -10,8 +10,8 @@ const appointmentRouter = express.Router();
 
 appointmentRouter
   .post("/book", bookAppointment)
-  .get(":patientId", getAppointmentsByPatientId)
-  .put("update/:appointmentId", updateAppointmentById)
-  .delete(":patientId", deleteAppointmentsByPatientId);
+  .get("/:patientId", getAppointmentsByPatientId)
+  .put("/update/:appointmentId", updateAppointmentById)
+  .delete("/:patientId", deleteAppointmentsByPatientId);
 
 export default appointmentRouter;

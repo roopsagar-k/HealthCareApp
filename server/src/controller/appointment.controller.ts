@@ -72,12 +72,12 @@ export const updateAppointmentById = asyncHandler(
     }
 
     const { appointmentId } = req.params;
-    const { date, time } = req.body;
+    const { newDate, newTime } = req.body;
 
     const updatedAppointment = await AppointmentService.updateAppointmentById(
       appointmentId,
-      date,
-      time
+      newDate,
+      newTime
     );
 
     res

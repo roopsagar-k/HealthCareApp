@@ -113,6 +113,8 @@ export class AppointmentService {
     if (!appointment) throw ApiError.notFound("Appointment not found.");
 
     const newDate = parse(`${date} ${time}`, "yyyy-MM-dd HH:mm", new Date());
+    console.log("Raw:", `${date} ${time}`);
+    console.log(newDate);
     if (!this.isAllowedDay(newDate)) {
       throw ApiError.badRequest("Appointments must be on Tue/Wed/Fri.");
     }
