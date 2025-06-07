@@ -1,16 +1,24 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { User, ApiResponse, AuthContextType } from "../lib/types";
 import { message } from "antd";
-import { requestHandler } from "../lib/requestHandler"; 
+import { requestHandler } from "../lib/requestHandler";
 
+// Add these types for return values
+type AuthResult = {
+  success: boolean;
+  error?: string;
+  data?: any;
+};
+
+// Update AuthContextType to reflect new return types
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   error: null,
-  login: async () => {},
-  register: async () => {},
-  logout: async () => {},
-  refreshUser: async () => {},
+  login: async () => ({ success: false }),
+  register: async () => ({ success: false }),
+  logout: async () => ({ success: false }),
+  refreshUser: async () => ({ success: false }),
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -18,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const getUser = async () => {
+  const getUser = async (): Promise<AuthResult> => {
     setLoading(true);
     try {
       const data: ApiResponse<User> = await requestHandler({
@@ -29,23 +37,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.success && data.data) {
         setUser(data.data);
         setError(null);
+        return { success: true, data: data.data };
       } else {
         setUser(null);
+        const errorMsg = data.message || "Failed to get user";
+        setError(errorMsg);
+        return { success: false, error: errorMsg };
       }
     } catch (error: any) {
-      console.error("Auth error:", error.message);
-      setError(error.message);
+      const errorMessage =
+        error.response?.data?.message || error.message || "An error occurred";
+      console.error("Auth error:", errorMessage);
+      setError(errorMessage);
       setUser(null);
+      return { success: false, error: errorMessage };
     } finally {
       setLoading(false);
     }
   };
 
-  const refreshUser = async () => {
+  const refreshUser = async (): Promise<AuthResult> => {
     return getUser();
   };
 
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (
+    name: string,
+    email: string,
+    password: string
+  ): Promise<AuthResult> => {
     setLoading(true);
     try {
       const data: ApiResponse<User> = await requestHandler({
@@ -55,22 +74,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (data.success) {
-        message.success("Registration successful! Please login.");
         setError(null);
+        return { success: true, data: data.data };
       } else {
-        throw new Error(data.message);
+        const errorMsg = data.message || "Registration failed";
+        setError(errorMsg);
+        return { success: false, error: errorMsg };
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message;
+      const errorMessage =
+        error.response?.data?.message || error.message || "Registration failed";
       setError(errorMessage);
-      message.error(errorMessage);
-      throw error;
+      // Remove the Ant Design message here since you'll handle it in component
+      return { success: false, error: errorMessage };
     } finally {
       setLoading(false);
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<AuthResult> => {
     setLoading(true);
     try {
       const data: ApiResponse<{ token: string }> = await requestHandler({
@@ -79,32 +104,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         data: { email, password },
       });
 
+      console.log("json", JSON.stringify(data));
+
       if (data.success) {
-        message.success("Login successful!");
-        await getUser();
+        const userResult = await getUser();
+        if (userResult.success) {
+          return { success: true, data: data.data };
+        } else {
+          return {
+            success: false,
+            error: "Login successful but failed to get user data",
+          };
+        }
       } else {
-        throw new Error(data.message);
+        const errorMsg = data.message || "Login failed";
+        setError(errorMsg);
+        return { success: false, error: errorMsg };
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message;
+      console.log("got an error in the catch block");
+      const errorMessage =
+        error.response?.data?.message || error.message || "Login failed";
       setError(errorMessage);
-      message.error(errorMessage);
-      throw error;
+      console.error(errorMessage);
+      // Remove the Ant Design message here since you'll handle it in component
+      return { success: false, error: errorMessage };
     } finally {
       setLoading(false);
     }
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<AuthResult> => {
     try {
-      await requestHandler({
+      const data: ApiResponse<{}> = await requestHandler({
         method: "POST",
         endpoint: "/api/auth/logout",
       });
+
+      console.log(data)
+
       setUser(null);
+      setError(null);
       message.success("Logged out successfully!");
+      return { success: true };
     } catch (error: any) {
-      console.error("Logout error:", error.response?.data || error.message);
+      const errorMessage =
+        error.response?.data?.message || error.message || "Logout failed";
+      console.error("Logout error:", errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 
@@ -114,7 +161,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, error, login, register, logout, refreshUser }}
+      value={{
+        user,
+        loading,
+        error,
+        login,
+        register,
+        logout,
+        refreshUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

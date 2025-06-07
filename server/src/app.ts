@@ -22,7 +22,7 @@ export const app = express();
 
 app.use(
   cors({
-    origin: "*", // Allowed(*) since the deployed application will be tested
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );

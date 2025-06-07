@@ -8,6 +8,7 @@ export const authenticateJWT = (
   next: NextFunction
 ) => {
   const token = req.cookies.token;
+  console.log(token)
 
   if (!token) {
     return next(ApiError.unauthorized("No token provided"));

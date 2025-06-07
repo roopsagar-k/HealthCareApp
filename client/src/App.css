@@ -1,1 +1,111 @@
 @import "tailwindcss";
+
+.ant-message {
+  z-index: 9999 !important;
+}
+
+/* Custom Ant Design overrides */
+.custom-tabs .ant-tabs-tab {
+  @apply font-medium;
+}
+
+.custom-tabs .ant-tabs-tab-active {
+  @apply text-blue-600;
+}
+
+.custom-tabs .ant-tabs-ink-bar {
+  @apply bg-blue-600;
+}
+
+.custom-table .ant-table-thead > tr > th {
+  @apply bg-gray-50 font-semibold text-gray-700 border-b-2 border-gray-200;
+}
+
+.custom-table .ant-table-tbody > tr > td {
+  @apply border-b border-gray-100;
+}
+
+.custom-table .ant-table-tbody > tr:hover > td {
+  @apply bg-blue-50;
+}
+
+.custom-modal .ant-modal-header {
+  @apply border-b border-gray-200 pb-4;
+}
+
+.custom-modal .ant-modal-title {
+  @apply text-lg font-semibold text-gray-800;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Loading animations */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom button hover effects */
+.ant-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.ant-btn-danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+/* Card hover effects */
+.ant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Form focus effects */
+.ant-picker:focus,
+.ant-picker-focused {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Tag animations */
+.ant-tag {
+  transition: all 0.2s ease;
+}
+
+.ant-tag:hover {
+  transform: scale(1.05);
+}

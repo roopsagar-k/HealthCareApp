@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Tabs, Form, Input, Button, ConfigProvider } from "antd";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -8,22 +10,76 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const AuthForm = () => {
   const [loginForm] = Form.useForm();
   const [registerForm] = Form.useForm();
-  const [emailError, setEmailError] = useState("");
+  const [activeTab, setActiveTab] = useState("login");
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [registerLoading, setRegisterLoading] = useState(false);
+  const [messageText, setMessageText] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<"error" | "success" | null>(
+    null
+  );
 
-  const validateEmail = (email: string) => {
-    if (!emailRegex.test(email)) {
-      setEmailError("Please enter a valid email address.");
-    } else {
-      setEmailError("");
-    }
+  const { login, register } = useAuth();
+  const navigate = useNavigate();
+
+  const clearMessage = () => {
+    setMessageText(null);
+    setMessageType(null);
+  };
+
+  const showMessage = (text: string, type: "error" | "success") => {
+    setMessageText(text);
+    setMessageType(type);
+    // Clear message after 5 seconds
+    setTimeout(() => {
+      clearMessage();
+    }, 5000);
   };
 
   const onLoginFinish = async (values: any) => {
-    console.log("Login values:", values);
+    setLoginLoading(true);
+    clearMessage();
+
+    try {
+      const { success, error } = await login(values.email, values.password);
+
+      if (success) {
+        showMessage("Login successful!", "success");
+        navigate("/home");
+      } else if (error) {
+        showMessage(error, "error");
+      }
+    } catch (error: any) {
+      showMessage("An unexpected error occurred during login", "error");
+      console.error("Login failed:", error);
+    } finally {
+      setLoginLoading(false);
+    }
   };
 
   const onRegisterFinish = async (values: any) => {
-    console.log("Register values:", values);
+    setRegisterLoading(true);
+    clearMessage();
+
+    try {
+      const { success, error } = await register(
+        values.name,
+        values.email,
+        values.password
+      );
+
+      if (success) {
+        showMessage("Registration successful! Please login.", "success");
+        setActiveTab("login");
+        registerForm.resetFields();
+      } else if (error) {
+        showMessage(error, "error");
+      }
+    } catch (error: any) {
+      showMessage("An unexpected error occurred during registration", "error");
+      console.error("Registration failed:", error);
+    } finally {
+      setRegisterLoading(false);
+    }
   };
 
   return (
@@ -48,7 +104,14 @@ const AuthForm = () => {
           />
         </div>
 
-        <Tabs defaultActiveKey="login" className="w-full -mt-4">
+        <Tabs
+          activeKey={activeTab}
+          onChange={(key) => {
+            setActiveTab(key);
+            clearMessage();
+          }}
+          className="w-full -mt-4"
+        >
           <TabPane tab="Login" key="login">
             <Form
               form={loginForm}
@@ -70,10 +133,7 @@ const AuthForm = () => {
                   },
                 ]}
               >
-                <Input
-                  placeholder="you@example.com"
-                  onChange={(e) => validateEmail(e.target.value)}
-                />
+                <Input placeholder="you@example.com" />
               </Form.Item>
 
               <Form.Item
@@ -87,18 +147,35 @@ const AuthForm = () => {
               </Form.Item>
 
               <div className="flex items-center justify-between mb-6">
-                <Form.Item name="remember" valuePropName="checked" noStyle>
-                  <Button type="link" className="p-0 h-auto text-blue-600">
-                    Forgot password?
-                  </Button>
-                </Form.Item>
+                <span
+                  className="text-blue-600 cursor-pointer hover:text-blue-800"
+                  onClick={() => setActiveTab("register")}
+                >
+                  Don't have an account yet? Please register
+                </span>
               </div>
 
               <Form.Item>
-                <Button type="primary" htmlType="submit" block>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  loading={loginLoading}
+                >
                   Sign in
                 </Button>
               </Form.Item>
+
+              {/* Message span below login form */}
+              {messageText && activeTab === "login" && (
+                <span
+                  className={`block mt-2 text-sm ${
+                    messageType === "error" ? "text-red-600" : "text-green-600"
+                  }`}
+                >
+                  {messageText}
+                </span>
+              )}
             </Form>
           </TabPane>
 
@@ -113,7 +190,10 @@ const AuthForm = () => {
               <Form.Item
                 label="Full Name"
                 name="name"
-                rules={[{ required: true, message: "Please enter your name" }]}
+                rules={[
+                  { required: true, message: "Please enter your name" },
+                  { min: 2, message: "Name must be at least 2 characters" },
+                ]}
               >
                 <Input placeholder="Enter your full name" />
               </Form.Item>
@@ -131,10 +211,7 @@ const AuthForm = () => {
                   },
                 ]}
               >
-                <Input
-                  placeholder="you@example.com"
-                  onChange={(e) => validateEmail(e.target.value)}
-                />
+                <Input placeholder="you@example.com" />
               </Form.Item>
 
               <Form.Item
@@ -142,22 +219,61 @@ const AuthForm = () => {
                 name="password"
                 rules={[
                   { required: true, message: "Please create a password" },
+                  { min: 6, message: "Password must be at least 6 characters" },
+                ]}
+              >
+                <Input.Password placeholder="••••••••" />
+              </Form.Item>
+
+              <Form.Item
+                label="Confirm Password"
+                name="confirmPassword"
+                dependencies={["password"]}
+                rules={[
+                  { required: true, message: "Please confirm your password" },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("password") === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject("Passwords do not match");
+                    },
+                  }),
                 ]}
               >
                 <Input.Password placeholder="••••••••" />
               </Form.Item>
 
               <Form.Item>
-                <Button type="primary" htmlType="submit" block>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  loading={registerLoading}
+                >
                   Create account
                 </Button>
               </Form.Item>
 
-              <div className="relative mt-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300"></div>
-                </div>
+              <div className="text-center mt-4">
+                <span
+                  className="text-blue-600 cursor-pointer hover:text-blue-800"
+                  onClick={() => setActiveTab("login")}
+                >
+                  Already have an account? Sign in
+                </span>
               </div>
+
+           
+              {messageText && activeTab === "register" && (
+                <span
+                  className={`block mt-2 text-sm ${
+                    messageType === "error" ? "text-red-600" : "text-green-600"
+                  }`}
+                >
+                  {messageText}
+                </span>
+              )}
             </Form>
           </TabPane>
         </Tabs>

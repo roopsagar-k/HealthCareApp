@@ -20,11 +20,12 @@ const api = axios.create({
 export const requestHandler = async ({
   method,
   endpoint,
-  data = null,
+  data = {},
   headers = {},
   params = {},
 }: IRequestHandler) => {
   try {
+    console.log("requesting...")
     const response = await api({
       method,
       url: endpoint,
@@ -32,7 +33,7 @@ export const requestHandler = async ({
       headers,
       params,
     });
-    console.log(response.data);
+    console.log("response got", response.data);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError)
