@@ -620,12 +620,13 @@ const AppointmentDashboard: React.FC = () => {
                 hourStep={1}
                 disabledHours={() => {
                   const disabled = [];
-                  for (let i = 0; i < 10; i++) disabled.push(i);
-                  for (let i = 11; i < 14; i++) disabled.push(i);
-                  for (let i = 15; i < 16; i++) disabled.push(i);
-                  for (let i = 17; i < 24; i++) disabled.push(i);
+                  for (let i = 0; i < 9; i++) disabled.push(i);
+                  for (let i = 18; i < 24; i++) disabled.push(i);
                   return disabled;
                 }}
+                disabledMinutes={() =>
+                  Array.from({ length: 60 }, (_, i) => i).filter((i) => i !== 0)
+                }
               />
 
               <div className="mt-2 text-xs text-gray-500">

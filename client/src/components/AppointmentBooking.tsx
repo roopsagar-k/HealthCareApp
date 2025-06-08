@@ -181,7 +181,8 @@ const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
             <TimePicker
               style={{ width: "100%" }}
               format="HH:mm"
-              use12Hours
+              value={selectedTime}
+              onChange={setSelectedTime}
               hourStep={1}
               showNow={false}
               placeholder="Choose appointment time"
