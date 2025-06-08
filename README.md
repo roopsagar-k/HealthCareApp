@@ -35,6 +35,9 @@ This is a full-stack healthcare application built using **React (Vite)**, **Expr
 - View all upcoming and past appointments.
 - Options to **update** or **cancel** appointments directly from the dashboard.
 
+### 📧 Email Notifications
+- Patients receive automatic email notifications on **appointment creation**, **rescheduling**, and **cancellation**.
+
 ---
 
 ## 🧰 Tech Stack
@@ -81,13 +84,17 @@ Create a .env file in the client directory with the folling:
 
 Create a .env file in the server directory with the following:
 
-| Variable Name           | Description                                   |
-|-------------------------|-----------------------------------------------|
-| `FIREBASE_PROJECT_ID`   | Your Firebase project ID                      |
-| `FIREBASE_CLIENT_EMAIL` | Firebase service account email                |
-| `FIREBASE_PRIVATE_KEY`  | Private key for Firebase service account (escaped with `\n`) |
-| `JWT_SECRET`            | Secret key used for signing JWT tokens        |
-| `CLIENT_URL`            | URL of the frontend client (e.g. Vite app)    |
+### 🔐 Environment Variables
+
+| Variable Name           | Description                                                                 |
+|-------------------------|-----------------------------------------------------------------------------|
+| `FIREBASE_PROJECT_ID`   | Your Firebase project ID                                                    |
+| `FIREBASE_CLIENT_EMAIL` | Firebase service account email                                              |
+| `FIREBASE_PRIVATE_KEY`  | Private key for Firebase service account (escaped with `\n`, wrapped in `""`) |
+| `JWT_SECRET`            | Secret key used for signing JWT tokens                                     |
+| `CLIENT_URL`            | URL of the frontend client (e.g. Vite app)                                 |
+| `EMAIL_USER`            | Gmail address used to send email notifications                             |
+| `EMAIL_PASS`            | Gmail App Password (if 2FA enabled) or account password (not recommended)  |
 
 
 
