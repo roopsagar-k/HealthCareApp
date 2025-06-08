@@ -180,7 +180,7 @@ const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
           >
             <TimePicker
               style={{ width: "100%" }}
-              format="h A"
+              format="HH:mm"
               use12Hours
               hourStep={1}
               showNow={false}

@@ -612,12 +612,12 @@ const AppointmentDashboard: React.FC = () => {
               <TimePicker
                 value={editTime}
                 onChange={setEditTime}
-                format="h A"
-                use12Hours
+                format="HH:mm"
                 className="w-full rounded-lg"
                 size="large"
                 showNow={false}
                 placeholder="Choose appointment time"
+                hourStep={1}
                 disabledHours={() => {
                   const disabled = [];
                   for (let i = 0; i < 10; i++) disabled.push(i);
@@ -626,9 +626,6 @@ const AppointmentDashboard: React.FC = () => {
                   for (let i = 17; i < 24; i++) disabled.push(i);
                   return disabled;
                 }}
-                disabledMinutes={() =>
-                  Array.from({ length: 60 }, (_, i) => i).filter((i) => i !== 0)
-                }
               />
 
               <div className="mt-2 text-xs text-gray-500">
