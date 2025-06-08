@@ -71,10 +71,25 @@ npm install
 
 ### 3. Setup Environment Variables
 
+Create a .env file in the client directory with the folling: 
+
+
+| Variable Name     | Description                           |
+|-------------------|---------------------------------------|
+| `VITE_BASE_URL`   | Base URL of the backend API server    |
+
+
 Create a .env file in the server directory with the following:
-FIREBASE_PROJECT_ID=your_project_id
-FIREBASE_CLIENT_EMAIL=your_service_account_email
-FIREBASE_PRIVATE_KEY=your_private_key
+
+| Variable Name           | Description                                   |
+|-------------------------|-----------------------------------------------|
+| `FIREBASE_PROJECT_ID`   | Your Firebase project ID                      |
+| `FIREBASE_CLIENT_EMAIL` | Firebase service account email                |
+| `FIREBASE_PRIVATE_KEY`  | Private key for Firebase service account (escaped with `\n`) |
+| `JWT_SECRET`            | Secret key used for signing JWT tokens        |
+| `CLIENT_URL`            | URL of the frontend client (e.g. Vite app)    |
+
+
 
 ### 4. Run Locally
 
