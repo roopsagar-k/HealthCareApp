@@ -10,4 +10,6 @@ export const ENV = {
     : process.env.FIREBASE_PRIVATE_KEY,
   JWT_SECRET: (process.env.JWT_SECRET || "").toString(),
   CLIENT_URL: (process.env.CLIENT_URL || "").toString(),
+  EMAIL_USER: process.env.EMAIL_USER,
+  EMAIL_PASS: process.env.EMAIL_PASS,
 };

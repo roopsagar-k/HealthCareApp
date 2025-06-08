@@ -3,10 +3,11 @@ import { Appointment } from "../models/appointment.model";
 import { Patient } from "../models/patient.model";
 import ApiError from "../utils/api-error.utils";
 import { addDays, format, isSameDay, parse } from "date-fns";
+import { EmailService } from "./email.service";
 
 const ALLOWED_DAYS = [2, 3, 5]; // Tuesday, Wednesday, Friday
 
-export class AppointmentService {
+export class AppointmentService extends EmailService {
   /**
    * Book a new appointment and auto-generate 2 follow-ups (sessions 2 and 3).
    *
@@ -79,6 +80,9 @@ export class AppointmentService {
       lastDate = nextDate;
     }
 
+    const service = new AppointmentService();
+    await service.sendAppointmentBookedEmail(patient, appointments);
+
     return appointments;
   }
 
@@ -109,7 +113,10 @@ export class AppointmentService {
     time: string
   ): Promise<Appointment> {
     const appointmentRepo = getRepository(Appointment);
+    const patientRepo = getRepository(Patient);
     const appointment = await appointmentRepo.findById(appointmentId);
+    const patient = await patientRepo.findById(appointment.patientId);
+    const service = new AppointmentService();
     if (!appointment) throw ApiError.notFound("Appointment not found.");
 
     const newDate = parse(`${date} ${time}`, "yyyy-MM-dd HH:mm", new Date());
@@ -127,7 +134,9 @@ export class AppointmentService {
     appointment.date = date;
     appointment.time = time;
     appointment.updatedAt = new Date();
-    return await appointmentRepo.update(appointment);
+    const updatedAppointment = await appointmentRepo.update(appointment);
+    await service.sendAppointmentUpdatedEmail(patient, updatedAppointment);
+    return updatedAppointment;
   }
 
   /**
@@ -180,16 +189,22 @@ export class AppointmentService {
    */
   static async deleteAppointmentsByPatientId(patientId: string): Promise<void> {
     const appointmentRepo = getRepository(Appointment);
-    const appointments = await appointmentRepo
-      .whereEqualTo("patientId", patientId)
-      .find();
+    const patientRepo = getRepository(Patient);
+
+    const [appointments, patient] = await Promise.all([
+      appointmentRepo.whereEqualTo("patientId", patientId).find(),
+      patientRepo.findById(patientId),
+    ]);
 
     if (appointments.length === 0) {
       throw ApiError.notFound("No appointments found for this patient.");
     }
 
-    await Promise.all(
-      appointments.map((appt) => appointmentRepo.delete(appt.id))
-    );
+    const service = new AppointmentService();
+
+    await Promise.all([
+      appointments.map((appt) => appointmentRepo.delete(appt.id)),
+      service.sendAppointmentCancelledEmail(patient, appointments),
+    ]);
   }
 }
