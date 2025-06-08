@@ -229,7 +229,6 @@ const AppointmentDashboard: React.FC = () => {
     }
   };
 
-
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -240,7 +239,7 @@ const AppointmentDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-     {contextHolder}
+      {contextHolder}
       {/* Static Cards  */}
       <StaticCards appointments={appointments} />
       {/* Main Appointments Card */}
@@ -613,10 +612,12 @@ const AppointmentDashboard: React.FC = () => {
               <TimePicker
                 value={editTime}
                 onChange={setEditTime}
-                format="HH:mm"
+                format="h A"
+                use12Hours
                 className="w-full rounded-lg"
                 size="large"
                 showNow={false}
+                placeholder="Choose appointment time"
                 disabledHours={() => {
                   const disabled = [];
                   for (let i = 0; i < 10; i++) disabled.push(i);
@@ -625,7 +626,11 @@ const AppointmentDashboard: React.FC = () => {
                   for (let i = 17; i < 24; i++) disabled.push(i);
                   return disabled;
                 }}
+                disabledMinutes={() =>
+                  Array.from({ length: 60 }, (_, i) => i).filter((i) => i !== 0)
+                }
               />
+
               <div className="mt-2 text-xs text-gray-500">
                 Available times: 10:00 AM, 2:00 PM, 4:00 PM
               </div>

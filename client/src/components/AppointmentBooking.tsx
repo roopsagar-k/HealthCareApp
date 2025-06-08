@@ -179,21 +179,23 @@ const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
             className="h-full shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-200"
           >
             <TimePicker
-              value={selectedTime}
-              onChange={setSelectedTime}
-              format="HH:mm"
-              className="w-full"
-              size="large"
-              placeholder="Choose appointment time"
-            //   minuteStep={60}
+              style={{ width: "100%" }}
+              format="h A"
+              use12Hours
+              hourStep={1}
               showNow={false}
+              placeholder="Choose appointment time"
               disabledHours={() => {
                 const disabled = [];
                 for (let i = 0; i < 9; i++) disabled.push(i);
                 for (let i = 18; i < 24; i++) disabled.push(i);
                 return disabled;
               }}
+              disabledMinutes={() =>
+                Array.from({ length: 60 }, (_, i) => i).filter((i) => i !== 0)
+              }
             />
+
             <div className="mt-4 text-sm text-gray-600">
               <p className="font-medium mb-2">Available Times:</p>
               <div className="grid grid-cols-3 gap-1">
