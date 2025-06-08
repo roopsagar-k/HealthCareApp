@@ -1,7 +1,6 @@
-import React from "react";
 import dayjs from "dayjs";
 import type { Appointment } from "../lib/types";
-import { Row, Col, Statistic, Progress, Calendar, Card } from "antd";
+import { Row, Col, Card } from "antd";
 import { motion } from "framer-motion";
 import { Calendar1, CheckCircle, Clock } from "lucide-react";
 

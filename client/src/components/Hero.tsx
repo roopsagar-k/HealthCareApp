@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import AuthForm from "./AuthForm";
 import OnboardingCarousel from "./OnboardingCarousel";
 
@@ -18,14 +17,8 @@ const carouselTexts = [
   },
 ];
 
-const textVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -20 },
-};
-
 const Hero = () => {
-  const [index, setIndex] = useState(0);
+  const [_index, setIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {

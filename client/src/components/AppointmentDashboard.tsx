@@ -228,17 +228,6 @@ const AppointmentDashboard: React.FC = () => {
     }
   };
 
-  // Available time slots
-  const timeSlots = ["10:00", "14:00", "16:00"];
-
-  // Available days
-  const allowedDays = [
-    { name: "Tuesday", short: "Tue", dayNum: 2 },
-    { name: "Wednesday", short: "Wed", dayNum: 3 },
-    { name: "Friday", short: "Fri", dayNum: 5 },
-  ];
-
-  
 
   if (loading) {
     return (

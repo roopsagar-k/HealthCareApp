@@ -1,45 +1,15 @@
 import type React from "react";
-import { Layout, Button, Avatar, Dropdown, message } from "antd";
+import { Layout} from "antd";
 import { motion } from "framer-motion";
-import { useAuth } from "../context/AuthContext";
 import AppointmentDashboard from "../components/AppointmentDashboard";
-import { useNavigate } from "react-router-dom";
 import {
-  CalendarOutlined,
-  UserOutlined,
-  LogoutOutlined,
   HeartOutlined,
 } from "@ant-design/icons";
-import type { MenuProps } from "antd";
-import { useState } from "react";
 import HeaderComponent from "../components/Header";
 
-const { Content, Header } = Layout;
+const { Content } = Layout;
 
 const Home: React.FC = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
-
-  const handleLogout = async () => {
-    const result = await logout();
-    if (result.success) {
-      message.success("Logged out successfully!");
-      navigate("/");
-    } else {
-      message.error(result.error || "Logout failed");
-    }
-  };
-
-  const userMenuItems: MenuProps["items"] = [
-    {
-      key: "logout",
-      icon: <LogoutOutlined />,
-      label: "Logout",
-      onClick: handleLogout,
-    },
-  ];
 
   return (
     <Layout
