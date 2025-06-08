@@ -8,7 +8,7 @@ import {
   TimePicker,
   Button,
   Alert,
-  message,
+  message as msg,
   Row,
   Col,
 } from "antd";
@@ -34,6 +34,7 @@ const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [selectedTime, setSelectedTime] = useState<Dayjs | null>(null);
   const [loading, setLoading] = useState(false);
+  const [message, contextHolder] = msg.useMessage();
 
   // Available time slots (9 AM to 5 PM)
   const timeSlots = [
@@ -122,6 +123,7 @@ const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
 
   return (
     <div className="space-y-6">
+      {contextHolder}
       <Alert
         message="Special Treatment Booking"
         description="Book your first session and we'll automatically schedule your 2 follow-up sessions at 2-week intervals. Appointments are available on Tuesday, Wednesday, and Friday only."

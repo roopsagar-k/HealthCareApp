@@ -6,18 +6,20 @@ import {
   HeartOutlined,
 } from "@ant-design/icons";
 import HeaderComponent from "../components/Header";
+import { message } from "antd";
 
 const { Content } = Layout;
 
 const Home: React.FC = () => {
-
+  const [msg, contextHolder] = message.useMessage();
   return (
     <Layout
       style={{ background: "#ffffff", minHeight: "100vh" }}
       className="min-h-screen"
     >
+      {contextHolder}
       {/* Header */}
-      <HeaderComponent />
+      <HeaderComponent message={msg} />
 
       {/* Main Content */}
       <Content className="pt-20 px-6 pb-6 mt-10">

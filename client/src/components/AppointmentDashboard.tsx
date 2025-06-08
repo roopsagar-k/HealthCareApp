@@ -6,7 +6,7 @@ import {
   Modal,
   DatePicker,
   TimePicker,
-  message,
+  message as msg,
   Popconfirm,
   Empty,
   Spin,
@@ -50,6 +50,7 @@ const AppointmentDashboard: React.FC = () => {
   const [editDate, setEditDate] = useState<Dayjs | null>(null);
   const [editTime, setEditTime] = useState<Dayjs | null>(null);
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [message, contextHolder] = msg.useMessage();
 
   const fetchAppointments = async () => {
     if (!user) return;
@@ -239,7 +240,7 @@ const AppointmentDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-     
+     {contextHolder}
       {/* Static Cards  */}
       <StaticCards appointments={appointments} />
       {/* Main Appointments Card */}

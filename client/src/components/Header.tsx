@@ -7,10 +7,12 @@ import {
 } from "@ant-design/icons";
 import { LogOut, Menu, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { message } from "antd";
 import { useNavigate } from "react-router-dom";
+import type { MessageInstance } from "antd/es/message/interface";
 
-const HeaderComponent: React.FC = () => {
+const HeaderComponent: React.FC<{ message: MessageInstance }> = ({
+  message,
+}) => {
   const { user, logout } = useAuth();
   const [showMobileMenu, setShowMobileMenu] = React.useState(false);
   const navigate = useNavigate();
