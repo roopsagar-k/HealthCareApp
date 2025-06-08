@@ -22,7 +22,7 @@ export const app = express();
 
 app.use(
   cors({
-    origin: "https://health-care-app-snowy.vercel.app/",
+    origin: ENV.CLIENT_URL ?? "http://localhost:5173",
     credentials: true,
   })
 );
