@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { Request, Response, NextFunction } from "express";
 import ApiError from "./utils/api-error.utils";
 import routes from "./routes";
+import { ENV } from "./config";
 
 declare global {
   namespace Express {
@@ -17,12 +18,11 @@ declare global {
   }
 }
 
-
 export const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ENV.CLIENT_URL ?? "http://localhost:5173",
     credentials: true,
   })
 );

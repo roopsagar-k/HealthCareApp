@@ -10,4 +10,5 @@ export const ENV = {
     "\n"
   ),
   JWT_SECRET: (process.env.JWT_SECRET || "").toString(),
+  CLIENT_URL: (process.env.CLIENT_URL || "").toString(),
 };
